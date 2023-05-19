@@ -1,0 +1,13 @@
+name: MLTB
+
+on:
+  workflow_dispatch:
+jobs:
+  RUNNING:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Create Image
+        run: docker pull mltbrepo/mltb:v1
+      - name: Run Image
+        run: docker run --env CONFIG_FILE_URL=${{ secrets.CONFIG_FILE_URL }} --env TOKEN_PICKLE_URL=${{ secrets.TOKEN_PICKLE_URL }} mltbrepo/mltb:v1 
