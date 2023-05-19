@@ -1,13 +1,20 @@
-name: MLTB
+name: Build Docker
 
 on:
-  workflow_dispatch:
+  push:
+   branches: [ master ]
+  pull_request:
+    branches: [ master ]
+      
 jobs:
-  RUNNING:
+  build:
+
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@main
-      - name: Create Image
-        run: docker pull mltbrepo/mltb:v1
-      - name: Run Image
-        run: docker run --env CONFIG_FILE_URL=${{ secrets.CONFIG_FILE_URL }} --env TOKEN_PICKLE_URL=${{ secrets.TOKEN_PICKLE_URL }} mltbrepo/mltb:v1 
+    - uses: actions/checkout@v1
+    - name: Build & Push Image
+      run: |
+        echo "${{ secrets.DOCKERPW }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+        docker image build -t "${{ secrets.DOCKER_HUB_USERNAME }}"/mltb:v1 .
+        docker push "${{ secrets.DOCKER_HUB_USERNAME }}"/mltb:v1
